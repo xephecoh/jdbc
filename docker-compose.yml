@@ -1,0 +1,11 @@
+postgres:
+  container_name: test_postgres
+  image: postgres:alpine
+  restart: always
+  ports:
+    - 5432:5432
+  environment:
+    POSTGRES_PASSWORD: 12345
+    POSTGRES_USER: test_user
+    POSTGRES_DB: test_DB
+    PGDATA: C:\PostgresVolumes
