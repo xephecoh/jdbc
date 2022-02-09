@@ -28,7 +28,7 @@ public class Connector {
         new Connector().startPostgresAdminDemo();
     }
 
-    public void startPostgresAdminDemo() throws IOException {
+    public void startPostgresAdminDemo()  {
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
              Scanner scanner = new Scanner(System.in)) {
             Class.forName("com.postgresql.jdbc.driver");
@@ -37,7 +37,7 @@ public class Connector {
             consolePrinter.printToConsole(report, query);
         } catch (SQLException e) {
             System.out.println("Unable to connect to database with url " + URL);
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | IOException e) {
             System.out.println(e.getMessage());
         }
     }
