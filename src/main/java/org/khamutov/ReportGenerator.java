@@ -4,17 +4,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
+import java.util.Map;
 
 
 public class ReportGenerator {
-
-
     public String newReport() {
-        File[] files = new File("C:\\Users\\xephe_000\\IdeaProjects\\Jdbc\\src\\main\\resources\\reports\\").listFiles();
+        File[] files = new File("src/main/resources/reports/").listFiles();
         if (files != null) {
             File file = files[files.length - 1];
             String name = file.getName();
@@ -26,89 +22,53 @@ public class ReportGenerator {
         }
     }
 
-    public String generateReport(String query, Connection connection) throws IOException, SQLException, WrongQueryFormatException {
+
+    public void generateReport(Map<String, List<Object>> data) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
-                "C:\\Users\\xephe_000\\IdeaProjects\\Jdbc\\src\\main\\resources\\reports\\" + newReport()))
+                "src/main/resources/reports/" + newReport()))
         ) {
-            StringBuilder reportContent;
-            if (query.startsWith("SELECT")) {
-                StringBuilder printWriterContent = new StringBuilder();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(query);
-                reportContent = new StringBuilder();
-                reportContent.append("<table>\r\n")
-                        .append("<tr>\r\n")
-                        .append("<th>Id</th>\r\n")
-                        .append("<th>Name</th>\r\n")
-                        .append("</tr>\r\n");
-                while (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    String name = resultSet.getString(2);
-                    reportContent.append("<tr>\r\n")
-                            .append("<td>")
-                            .append(id)
-                            .append("</td>\r\n")
-                            .append("<td>")
-                            .append(name)
-                            .append("</td>\r\n");
-                    printWriterContent.append(id)
-                            .append(" ")
-                            .append(name)
-                            .append("\r\n");
-                }
-                reportContent.append("</table>");
-                writer.write(reportContent.toString());
-                return printWriterContent.toString();
-            } else if (query.startsWith("DELETE")) {
-                reportContent = new StringBuilder();
-                Statement statement = connection.createStatement();
-                int numberOfAffectedRows = statement.executeUpdate(query);
-                if (numberOfAffectedRows == 1) {
-                    reportContent.append("Deleted 1 row");
-                    writer.write(reportContent.toString());
-                    return reportContent.toString();
-                } else if (numberOfAffectedRows > 0) {
-                    reportContent.append("Deleted ")
-                            .append(numberOfAffectedRows)
-                            .append(" rows");
-                } else {
-                    reportContent.append("No rows deleted");
-                }
-                writer.write(reportContent.toString());
-                return reportContent.toString();
-            } else if (query.startsWith("UPDATE")) {
-                reportContent = new StringBuilder();
-                Statement statement = connection.createStatement();
-                int numberOfAffectedRows = statement.executeUpdate(query);
-                if (numberOfAffectedRows == 1) {
-                    reportContent.append("Updated 1 row");
-                    writer.write(reportContent.toString());
-                    return reportContent.toString();
-                } else if (numberOfAffectedRows > 0) {
-                    reportContent.append("Updated ")
-                            .append(numberOfAffectedRows)
-                            .append(" rows");
-                } else {
-                    reportContent.append("No rows updated");
-                }
-                writer.write(reportContent.toString());
-                return reportContent.toString();
-            } else if (query.startsWith("INSERT")) {
-                reportContent = new StringBuilder();
-                Statement statement = connection.createStatement();
-                int numberOfAffectedRows = statement.executeUpdate(query);
-                if (numberOfAffectedRows > 0) {
-                    reportContent.append("Insert  ")
-                            .append(numberOfAffectedRows)
-                            .append(" rows");
-                } else {
-                    reportContent.append("No rows affected");
-                }
-                writer.write(reportContent.toString());
-                return reportContent.toString();
+            StringBuilder reportContent = new StringBuilder();
+            reportContent.append("<table>\r\n")
+                    .append("<tr>\r\n")
+                    .append("<th>Id</th>\r\n")
+                    .append("<th>Name</th>\r\n")
+                    .append("</tr>\r\n");
+            System.out.println(data.get("id").get(0)); // problem line
+            for (int i = 0; i < data.get("id").size() - 1; i++) {
+                int id = (Integer) data.get("id").get(i);
+                String name = (String) data.get("name").get(i);
+                reportContent.append("<tr>\r\n")
+                        .append("<td>")
+                        .append(id)
+                        .append("</td>\r\n")
+                        .append("<td>")
+                        .append(name)
+                        .append("</td>\r\n");
             }
+            reportContent.append("</table>");
+            writer.write(reportContent.toString());
         }
-        throw new WrongQueryFormatException("Wrong structure of query :" + query);
     }
 
+    private String response(QueryType type, int rowAffected) {
+        StringBuilder reportContent = new StringBuilder();
+        if (rowAffected > 0) {
+            reportContent.append(type.getParticiple())
+                    .append(" ")
+                    .append(rowAffected)
+                    .append(" rows");
+        } else {
+            reportContent.append("No rows ")
+                    .append(type.getParticiple());
+        }
+        return reportContent.toString();
+    }
+
+    public void generateReport(int rowAffected, QueryType type) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(
+                "src/main/resources/reports/" + newReport()))) {
+            String reportContent = response(type, rowAffected);
+            writer.write(reportContent);
+        }
+    }
 }
