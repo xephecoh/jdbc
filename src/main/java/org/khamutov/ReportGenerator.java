@@ -12,22 +12,23 @@ import java.sql.Statement;
 
 public class ReportGenerator {
 
+
     public String newReport() {
-        File[] files = new File("C:\\Users\\xephe_000\\IdeaProjects\\Jdbc\\src\\main\\resources\\reports").listFiles();
+        File[] files = new File("C:\\Users\\xephe_000\\IdeaProjects\\Jdbc\\src\\main\\resources\\reports\\").listFiles();
         if (files != null) {
             File file = files[files.length - 1];
             String name = file.getName();
             String lastReportNumber = name.replace("report_", "").replace(".html", "");
-            int newReportNumber = Integer.parseInt(lastReportNumber);
+            int newReportNumber = Integer.parseInt(lastReportNumber) + 1;
             return "report_" + newReportNumber + ".html";
         } else {
             return "report_1.html";
         }
     }
 
-    public String generateReport(String query, Connection connection) throws IOException, SQLException {
+    public String generateReport(String query, Connection connection) throws IOException, SQLException, WrongQueryFormatException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
-                "C:\\Users\\xephe_000\\IdeaProjects\\Jdbc\\src\\main\\resources\\" + newReport()))
+                "C:\\Users\\xephe_000\\IdeaProjects\\Jdbc\\src\\main\\resources\\reports\\" + newReport()))
         ) {
             StringBuilder reportContent;
             if (query.startsWith("SELECT")) {
@@ -39,7 +40,7 @@ public class ReportGenerator {
                         .append("<tr>\r\n")
                         .append("<th>Id</th>\r\n")
                         .append("<th>Name</th>\r\n")
-                        .append("</tr>");
+                        .append("</tr>\r\n");
                 while (resultSet.next()) {
                     int id = resultSet.getInt(1);
                     String name = resultSet.getString(2);
@@ -97,7 +98,7 @@ public class ReportGenerator {
                 Statement statement = connection.createStatement();
                 int numberOfAffectedRows = statement.executeUpdate(query);
                 if (numberOfAffectedRows > 0) {
-                    reportContent.append("Deleted ")
+                    reportContent.append("Insert  ")
                             .append(numberOfAffectedRows)
                             .append(" rows");
                 } else {
@@ -107,6 +108,7 @@ public class ReportGenerator {
                 return reportContent.toString();
             }
         }
-        return null;
+        throw new WrongQueryFormatException("Wrong structure of query :" + query);
     }
+
 }
