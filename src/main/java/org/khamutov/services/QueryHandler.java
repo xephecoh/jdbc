@@ -1,4 +1,7 @@
-package org.khamutov;
+package org.khamutov.services;
+
+import org.khamutov.enam.QueryType;
+import org.khamutov.exceptions.WrongQueryFormatException;
 
 import java.io.IOException;
 import java.sql.*;

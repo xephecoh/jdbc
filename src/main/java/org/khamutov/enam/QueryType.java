@@ -1,4 +1,4 @@
-package org.khamutov;
+package org.khamutov.enam;
 
 public enum QueryType {
     SELECT("SELECTED"),DELETE("deleted"),UPDATE("updated"),INSERT("inserted");

@@ -1,4 +1,6 @@
-package org.khamutov;
+package org.khamutov.services;
+
+import org.khamutov.enam.QueryType;
 
 import java.io.BufferedWriter;
 import java.io.File;

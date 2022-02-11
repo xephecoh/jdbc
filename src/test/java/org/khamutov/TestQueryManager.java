@@ -1,6 +1,9 @@
 package org.khamutov;
 
 import org.junit.jupiter.api.Test;
+import org.khamutov.enam.QueryType;
+import org.khamutov.exceptions.WrongQueryFormatException;
+import org.khamutov.services.QueryParser;
 
 import static org.junit.jupiter.api.Assertions.*;
 

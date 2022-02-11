@@ -1,4 +1,4 @@
-package org.khamutov;
+package org.khamutov.services;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package org.khamutov;
+package org.khamutov.exceptions;
 
 public class WrongQueryFormatException extends Exception {
     public WrongQueryFormatException(String message) {

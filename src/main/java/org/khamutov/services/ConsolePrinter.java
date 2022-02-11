@@ -1,4 +1,4 @@
-package org.khamutov;
+package org.khamutov.services;
 
 
 import io.bretty.console.table.Alignment;
