@@ -7,11 +7,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+
 
 
 public class ReportGenerator {
-
     public String newReport() {
         File[] files = new File("src/main/resources/reports/").listFiles();
         if (files != null) {
@@ -25,7 +24,8 @@ public class ReportGenerator {
         }
     }
 
-    public void generateReport(Map<String, List<Object>> data) throws IOException {
+
+/*    public void generateReport(Map<String, List<Object>> data) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
                 "src/main/resources/reports/" + newReport()))
         ) {
@@ -35,6 +35,7 @@ public class ReportGenerator {
                     .append("<th>Id</th>\r\n")
                     .append("<th>Name</th>\r\n")
                     .append("</tr>\r\n");
+            System.out.println(data.get("id").get(0)); // problem line
             for (int i = 0; i < data.get("id").size() - 1; i++) {
                 int id = (Integer) data.get("id").get(i);
                 String name = (String) data.get("name").get(i);
@@ -44,12 +45,46 @@ public class ReportGenerator {
                         .append("</td>\r\n")
                         .append("<td>")
                         .append(name)
-                        .append("</td>\r\n");
+                        .append("</td>\r\n")
+                        .append("</tr>\r\n");
+            }
+
+
+        });
+
+
+        reportContent.append("</table>");
+        writer.write(reportContent.toString());
+    }
+
+}*/
+
+    public void generateReport(List<TableEntity> data) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(
+                "src/main/resources/reports/" + newReport()))
+        ) {
+            StringBuilder reportContent = new StringBuilder();
+            reportContent.append("<table>\r\n")
+                    .append("<tr>\r\n");
+            List<String> columnsNames = data.get(0).getColumnsNames();
+            for (String columnsName : columnsNames) {
+                reportContent.append("<th>").append(columnsName).append("</th>\r\n");
+            }
+            reportContent.append("</tr>\r\n");
+            for (TableEntity tableEntity : data) {
+                reportContent.append("<tr>\r\n");
+                for (Object value : tableEntity.getRowValues()) {
+                    reportContent.append("<td>")
+                            .append(value)
+                            .append("</td>\r\n");
+                }
+                reportContent.append("</tr>");
             }
             reportContent.append("</table>");
             writer.write(reportContent.toString());
         }
     }
+
 
     private String response(QueryType type, int rowAffected) {
         StringBuilder reportContent = new StringBuilder();

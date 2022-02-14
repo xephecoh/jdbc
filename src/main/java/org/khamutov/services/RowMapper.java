@@ -1,27 +1,37 @@
 package org.khamutov.services;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RowMapper {
 
-    public Map<String, List<Object>> parseQueryResult(ResultSet resultSet) throws SQLException {
-        Map<String, List<Object>> data = new HashMap<>();
-        data.put("id",new ArrayList<>());
-        data.put("name",new ArrayList<>());
-        if (!resultSet.next()) {
-            System.out.println("Empty result set");
+    public List<TableEntity> parseQueryResult(ResultSet resultSet) throws SQLException {
+
+        List<String> columnNames = new ArrayList<>();
+        List<TableEntity> entities = new ArrayList<>();
+        ResultSetMetaData rsMetaData = resultSet.getMetaData();
+        int count = rsMetaData.getColumnCount();
+        for (int i = 1; i <= count; i++) {
+            String columnName = rsMetaData.getColumnName(i);
+            columnNames.add(columnName);
         }
+
         while (resultSet.next()) {
-            int id = resultSet.getInt(1);
-            String name = resultSet.getString(2);
-            data.get("id").add(id);
-            data.get("name").add(name);
+            TableEntity tableEntity = new TableEntity();
+            for (int i = 0; i < columnNames.size(); i++) {
+                String columnName = columnNames.get(i);
+                Object columnValue = resultSet.getObject(columnName);
+                tableEntity.add(columnValue);
+            }
+            entities.add(tableEntity);
         }
-        return data;
+        TableEntity tableEntity = entities.get(0);
+        if (tableEntity != null) {
+            tableEntity.injectColumnsNamesAndInitializeList(columnNames);
+        }
+        return entities;
     }
 }

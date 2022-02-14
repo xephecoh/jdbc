@@ -34,16 +34,19 @@ public class QueryHandler {
     public void handle() throws WrongQueryFormatException {
         System.out.println("Started");
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
-             Scanner scanner = new Scanner(System.in)) {
+             Scanner scanner = new Scanner(System.in)
+             ) {
             while (true) {
-                try (Statement statement = connection.createStatement()) {
+                try (Statement statement = connection.createStatement()
+                ) {
                     String query = scanner.nextLine();
                     QueryType queryType = parser.parseQuery(query);
                     if (queryType.equals(QueryType.SELECT)) {
                         ResultSet resultSet = statement.executeQuery(query);
-                        Map<String, List<Object>> queryContent = mapper.parseQueryResult(resultSet);
+                        List<TableEntity> queryContent = mapper.parseQueryResult(resultSet);
+                        resultSet.close();
                         reportGenerator.generateReport(queryContent);
-                        consolePrinter.printToConsole(queryContent);
+                        //consolePrinter.printToConsole(queryContent);
                     } else {
                         int numberOfAffectedRows = statement.executeUpdate(query);
                         String report = reportGenerator.generateReport(numberOfAffectedRows, queryType);
