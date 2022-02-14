@@ -11,8 +11,8 @@ public class RowMapper {
 
     public Map<String, List<Object>> parseQueryResult(ResultSet resultSet) throws SQLException {
         Map<String, List<Object>> data = new HashMap<>();
-        data.put("id",new ArrayList<Object>());
-        data.put("name",new ArrayList<Object>());
+        data.put("id",new ArrayList<>());
+        data.put("name",new ArrayList<>());
         if (!resultSet.next()) {
             System.out.println("Empty result set");
         }

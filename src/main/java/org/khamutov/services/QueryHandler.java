@@ -44,10 +44,12 @@ public class QueryHandler {
                     Map<String, List<Object>> queryContent = mapper.parseQueryResult(resultSet);
                     reportGenerator.generateReport(queryContent);
                     consolePrinter.printToConsole(queryContent);
+                    statement.close();
                 } else {
                     int numberOfAffectedRows = statement.executeUpdate(query);
                     String report = reportGenerator.generateReport(numberOfAffectedRows, queryType);
                     System.out.println(report);
+                    statement.close();
                 }
             }
         } catch (SQLException | IOException e) {

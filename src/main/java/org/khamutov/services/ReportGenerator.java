@@ -11,6 +11,7 @@ import java.util.Map;
 
 
 public class ReportGenerator {
+
     public String newReport() {
         File[] files = new File("src/main/resources/reports/").listFiles();
         if (files != null) {
@@ -23,7 +24,6 @@ public class ReportGenerator {
             return "report_1.html";
         }
     }
-
 
     public void generateReport(Map<String, List<Object>> data) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
