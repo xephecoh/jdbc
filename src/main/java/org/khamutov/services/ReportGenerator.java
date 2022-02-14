@@ -35,7 +35,6 @@ public class ReportGenerator {
                     .append("<th>Id</th>\r\n")
                     .append("<th>Name</th>\r\n")
                     .append("</tr>\r\n");
-            System.out.println(data.get("id").get(0)); // problem line
             for (int i = 0; i < data.get("id").size() - 1; i++) {
                 int id = (Integer) data.get("id").get(i);
                 String name = (String) data.get("name").get(i);
