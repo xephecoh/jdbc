@@ -32,23 +32,27 @@ public class QueryHandler {
     }
 
     public void handle() throws WrongQueryFormatException {
+        System.out.println("Started");
         try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
              Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Started");
-            String query = scanner.next();
-            QueryType queryType = parser.parseQuery(query);
-            Statement statement = connection.createStatement();
-            if (queryType.equals(QueryType.SELECT)) {
-                ResultSet resultSet = statement.executeQuery(query);
-                Map<String, List<Object>> queryContent = mapper.parseQueryResult(resultSet);
-                reportGenerator.generateReport(queryContent);
-                consolePrinter.printToConsole(queryContent);
-            } else {
-                int numberOfAffectedRows = statement.executeUpdate(query);
-                reportGenerator.generateReport(numberOfAffectedRows, queryType);
+            while (true) {
+                String query = scanner.nextLine();
+                QueryType queryType = parser.parseQuery(query);
+                Statement statement = connection.createStatement();
+                if (queryType.equals(QueryType.SELECT)) {
+                    ResultSet resultSet = statement.executeQuery(query);
+                    Map<String, List<Object>> queryContent = mapper.parseQueryResult(resultSet);
+                    reportGenerator.generateReport(queryContent);
+                    consolePrinter.printToConsole(queryContent);
+                } else {
+                    int numberOfAffectedRows = statement.executeUpdate(query);
+                    String report = reportGenerator.generateReport(numberOfAffectedRows, queryType);
+                    System.out.println(report);
+                }
             }
         } catch (SQLException | IOException e) {
             System.out.println(e.getMessage());
         }
     }
 }
+

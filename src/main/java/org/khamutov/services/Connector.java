@@ -1,7 +1,7 @@
 package org.khamutov.services;
 
 import org.khamutov.exceptions.WrongQueryFormatException;
-import org.khamutov.services.QueryHandler;
+
 
 public class Connector {
     public static void main(String[] args) throws WrongQueryFormatException {
