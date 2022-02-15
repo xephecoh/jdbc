@@ -1,10 +1,7 @@
 package org.khamutov.services;
 
-
-import org.khamutov.entities.QueryType;
 import org.khamutov.entities.Row;
 import org.khamutov.entities.Table;
-
 import java.util.List;
 
 
@@ -18,9 +15,7 @@ public class ConsolePrinter {
     private void printHeaders(Table table) {
         List<String> columnsNames =table.getColumnsNames();
         System.out.print("|");
-        columnsNames.forEach(e -> {
-                    System.out.print(" " + e + " " .repeat(10 - e.length()) + "|");
-                }
+        columnsNames.forEach(e -> System.out.print(" " + e + " " .repeat(10 - e.length()) + "|")
         );
         System.out.print("\r\n" + "-" .repeat(25) + "\r\n");
     }

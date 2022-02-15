@@ -68,12 +68,11 @@ public class ReportGenerator {
         return reportContent.toString();
     }
 
-    public String generateReport(int rowAffected, QueryType type) throws IOException {
+    public void generateReport(int rowAffected, QueryType type) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
                 path + newReport()))) {
             String reportContent = response(type, rowAffected);
             writer.write(reportContent);
-            return reportContent;
         }
     }
 }
