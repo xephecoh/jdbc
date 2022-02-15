@@ -9,59 +9,29 @@ import java.io.IOException;
 import java.util.List;
 
 
-
 public class ReportGenerator {
-    public String newReport() {
-        File[] files = new File("src/main/resources/reports/").listFiles();
+    private int counter;
+    private final String path;
+
+    public ReportGenerator(String path) {
+        File[] files = new File(path).listFiles();
         if (files != null) {
             File file = files[files.length - 1];
             String name = file.getName();
             String lastReportNumber = name.replace("report_", "").replace(".html", "");
-            int newReportNumber = Integer.parseInt(lastReportNumber) + 1;
-            return "report_" + newReportNumber + ".html";
-        } else {
-            return "report_1.html";
+            counter = Integer.parseInt(lastReportNumber) + 1;
         }
+        this.path = path;
     }
 
-
-/*    public void generateReport(Map<String, List<Object>> data) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(
-                "src/main/resources/reports/" + newReport()))
-        ) {
-            StringBuilder reportContent = new StringBuilder();
-            reportContent.append("<table>\r\n")
-                    .append("<tr>\r\n")
-                    .append("<th>Id</th>\r\n")
-                    .append("<th>Name</th>\r\n")
-                    .append("</tr>\r\n");
-            System.out.println(data.get("id").get(0)); // problem line
-            for (int i = 0; i < data.get("id").size() - 1; i++) {
-                int id = (Integer) data.get("id").get(i);
-                String name = (String) data.get("name").get(i);
-                reportContent.append("<tr>\r\n")
-                        .append("<td>")
-                        .append(id)
-                        .append("</td>\r\n")
-                        .append("<td>")
-                        .append(name)
-                        .append("</td>\r\n")
-                        .append("</tr>\r\n");
-            }
-
-
-        });
-
-
-        reportContent.append("</table>");
-        writer.write(reportContent.toString());
+    public String newReport() {
+        return "report_" + (++counter) + ".html";
     }
 
-}*/
 
     public void generateReport(List<TableEntity> data) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
-                "src/main/resources/reports/" + newReport()))
+                path + newReport()))
         ) {
             StringBuilder reportContent = new StringBuilder();
             reportContent.append("<table>\r\n")

@@ -5,7 +5,7 @@ import java.util.List;
 
 
 public class TableEntity {
-    private  List<String> columnsNames;
+    private List<String> columnsNames;
 
     private final List<Object> rowValues;
 
@@ -13,7 +13,8 @@ public class TableEntity {
         this.rowValues = new ArrayList<>();
 
     }
-    public void injectColumnsNamesAndInitializeList(List<String> columnsNames){
+
+    public void injectColumnsNamesAndInitializeList(List<String> columnsNames) {
         this.columnsNames = new ArrayList<>();
         this.columnsNames.addAll(columnsNames);
     }
@@ -21,7 +22,8 @@ public class TableEntity {
     public List<Object> getRowValues() {
         return rowValues;
     }
-    public void add( Object columnValue) {
+
+    public void add(Object columnValue) {
         rowValues.add(columnValue);
     }
 

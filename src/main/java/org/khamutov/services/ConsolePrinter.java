@@ -1,44 +1,37 @@
 package org.khamutov.services;
 
 
-import io.bretty.console.table.Alignment;
-import io.bretty.console.table.ColumnFormatter;
-import io.bretty.console.table.Precision;
-import io.bretty.console.table.Table;
-
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
 
 public class ConsolePrinter {
-    public void printToConsole(Map<String, List<Object>> data) {
-
-
-        List<Object> id = data.get("id");
-        List<Object> name = data.get("name");
-        Integer[] arrayOfIds= id.toArray(new Integer[0]);
-        String[] arrayOfNames= name.toArray(new String[0]);
-        ColumnFormatter<String> nameFormatter = ColumnFormatter.text(Alignment.LEFT, 10);
-        ColumnFormatter<Number> ageFormatter = ColumnFormatter.number(Alignment.RIGHT, 3, Precision.ZERO);
-
-        Table.Builder builder = new Table.Builder("Id", arrayOfIds, ageFormatter);
-        builder.addColumn("Name", arrayOfNames, nameFormatter);
-        Table table = builder.build();
-        System.out.println(table);
+    public void printToConsole(List<TableEntity> data) {
+        printHeaders(data);
+        System.out.print("\r\n" + "-" .repeat(25) + "\r\n");
+        printContent(data);
     }
 
-    public static void main(String[] args) {
-        ConsolePrinter cp = new ConsolePrinter();
-        Map<String, List<Object>> data = new HashMap<>();
-        data.put("id",new ArrayList<>());
-        data.put("name",new ArrayList<>());
-        data.get("id").add(1);
-        data.get("id").add(2);
-        data.get("id").add(3);
-        data.get("name").add("ivan");
-        data.get("name").add("andrey");
-        data.get("name").add("vasiliy");
-        cp.printToConsole(data);
+    private void printHeaders(List<TableEntity> data) {
+        List<String> columnsNames = data.get(0).getColumnsNames();
+        System.out.print("|");
+        columnsNames.forEach(e -> {
+                    System.out.print(" " + e + " " .repeat(10 - e.length()) + "|");
+                }
+        );
+        System.out.print("\r\n" + "-" .repeat(25) + "\r\n");
     }
+
+    private void printContent(List<TableEntity> data) {
+        for (TableEntity tableEntity : data) {
+            System.out.print("|");
+            for (Object cell : tableEntity.getRowValues()) {
+                System.out.print(" " + cell + " " .repeat(10 - cell.toString().length()) + "|");
+            }
+            System.out.println("\r\n" + "-" .repeat(25));
+        }
+    }
+
+
 }

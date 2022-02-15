@@ -10,22 +10,16 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class QueryHandler {
-    private static String URL = "jdbc:postgresql://localhost:5432/test_DB";
-    private static String USER_NAME = "test_user";
-    private static String PASSWORD = "12345";
+
     private final ReportGenerator reportGenerator;
     private final QueryParser parser;
     private final RowMapper mapper;
     private final ConsolePrinter consolePrinter;
+    private final InitializeService initializeService;
 
     public QueryHandler() {
-        if (InitializeService.processEnvironmentVariables()) {
-            Map<String, String> getenv = System.getenv();
-            URL = getenv.get("URL");
-            USER_NAME = getenv.get("USER_NAME");
-            PASSWORD = getenv.get("PASSWORD");
-        }
-        reportGenerator = new ReportGenerator();
+        initializeService = new InitializeService();
+        reportGenerator = new ReportGenerator(initializeService.getPath());
         parser = new QueryParser();
         mapper = new RowMapper();
         consolePrinter = new ConsolePrinter();
@@ -33,12 +27,12 @@ public class QueryHandler {
 
     public void handle() throws WrongQueryFormatException {
         System.out.println("Started");
-        try (Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(initializeService.getUrl(),
+                initializeService.getUserName(), initializeService.getPassword());
              Scanner scanner = new Scanner(System.in)
-             ) {
+        ) {
             while (true) {
-                try (Statement statement = connection.createStatement()
-                ) {
+                try (Statement statement = connection.createStatement()) {
                     String query = scanner.nextLine();
                     QueryType queryType = parser.parseQuery(query);
                     if (queryType.equals(QueryType.SELECT)) {
@@ -46,13 +40,14 @@ public class QueryHandler {
                         List<TableEntity> queryContent = mapper.parseQueryResult(resultSet);
                         resultSet.close();
                         reportGenerator.generateReport(queryContent);
-                        //consolePrinter.printToConsole(queryContent);
+                        consolePrinter.printToConsole(queryContent);
                     } else {
                         int numberOfAffectedRows = statement.executeUpdate(query);
                         String report = reportGenerator.generateReport(numberOfAffectedRows, queryType);
                         System.out.println(report);
                     }
                 }
+                System.out.println("Query processed,enter new query");
             }
         } catch (SQLException | IOException e) {
             System.out.println(e.getMessage());
