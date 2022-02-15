@@ -19,7 +19,7 @@ public class ReportGenerator {
             File file = files[files.length - 1];
             String name = file.getName();
             String lastReportNumber = name.replace("report_", "").replace(".html", "");
-            counter = Integer.parseInt(lastReportNumber) + 1;
+            counter = Integer.parseInt(lastReportNumber);
         }
         this.path = path;
     }
@@ -33,25 +33,21 @@ public class ReportGenerator {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
                 path + newReport()))
         ) {
-            StringBuilder reportContent = new StringBuilder();
-            reportContent.append("<table>\r\n")
-                    .append("<tr>\r\n");
+            writer.write("<table>\r\n");
+            writer.write("<tr>\r\n");
             List<String> columnsNames = data.get(0).getColumnsNames();
             for (String columnsName : columnsNames) {
-                reportContent.append("<th>").append(columnsName).append("</th>\r\n");
+                writer.write("<th>" + columnsName + "</th>\r\n");
             }
-            reportContent.append("</tr>\r\n");
+            writer.write("</tr>\r\n");
             for (TableEntity tableEntity : data) {
-                reportContent.append("<tr>\r\n");
+                writer.write("<tr>\r\n");
                 for (Object value : tableEntity.getRowValues()) {
-                    reportContent.append("<td>")
-                            .append(value)
-                            .append("</td>\r\n");
+                    writer.write("<td>" + value + "</td>\r\n");
                 }
-                reportContent.append("</tr>");
+                writer.write("</tr>");
             }
-            reportContent.append("</table>");
-            writer.write(reportContent.toString());
+            writer.write("</table>");
         }
     }
 
