@@ -1,6 +1,8 @@
 package org.khamutov.services;
 
-import org.khamutov.enam.QueryType;
+import org.khamutov.entities.QueryType;
+import org.khamutov.entities.Row;
+import org.khamutov.entities.Table;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,18 +31,18 @@ public class ReportGenerator {
     }
 
 
-    public void generateReport(List<TableEntity> data) throws IOException {
+    public void generateReport(Table table) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
                 path + newReport()))
         ) {
             writer.write("<table>\r\n");
             writer.write("<tr>\r\n");
-            List<String> columnsNames = data.get(0).getColumnsNames();
+            List<String> columnsNames = table.getColumnsNames();
             for (String columnsName : columnsNames) {
                 writer.write("<th>" + columnsName + "</th>\r\n");
             }
             writer.write("</tr>\r\n");
-            for (TableEntity tableEntity : data) {
+            for (Row tableEntity : table.getRows()) {
                 writer.write("<tr>\r\n");
                 for (Object value : tableEntity.getRowValues()) {
                     writer.write("<td>" + value + "</td>\r\n");
@@ -68,7 +70,7 @@ public class ReportGenerator {
 
     public String generateReport(int rowAffected, QueryType type) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(
-                "src/main/resources/reports/" + newReport()))) {
+                path + newReport()))) {
             String reportContent = response(type, rowAffected);
             writer.write(reportContent);
             return reportContent;

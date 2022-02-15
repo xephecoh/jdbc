@@ -1,20 +1,22 @@
 package org.khamutov.services;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import org.khamutov.entities.QueryType;
+import org.khamutov.entities.Row;
+import org.khamutov.entities.Table;
+
 import java.util.List;
 
 
 public class ConsolePrinter {
-    public void printToConsole(List<TableEntity> data) {
-        printHeaders(data);
+    public void printToConsole(Table table) {
+        printHeaders(table);
         System.out.print("\r\n" + "-" .repeat(25) + "\r\n");
-        printContent(data);
+        printContent(table);
     }
 
-    private void printHeaders(List<TableEntity> data) {
-        List<String> columnsNames = data.get(0).getColumnsNames();
+    private void printHeaders(Table table) {
+        List<String> columnsNames =table.getColumnsNames();
         System.out.print("|");
         columnsNames.forEach(e -> {
                     System.out.print(" " + e + " " .repeat(10 - e.length()) + "|");
@@ -23,8 +25,8 @@ public class ConsolePrinter {
         System.out.print("\r\n" + "-" .repeat(25) + "\r\n");
     }
 
-    private void printContent(List<TableEntity> data) {
-        for (TableEntity tableEntity : data) {
+    private void printContent(Table table) {
+        for (Row tableEntity : table.getRows()) {
             System.out.print("|");
             for (Object cell : tableEntity.getRowValues()) {
                 System.out.print(" " + cell + " " .repeat(10 - cell.toString().length()) + "|");

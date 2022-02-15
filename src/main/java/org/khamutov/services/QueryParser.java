@@ -1,6 +1,6 @@
 package org.khamutov.services;
 
-import org.khamutov.enam.QueryType;
+import org.khamutov.entities.QueryType;
 import org.khamutov.exceptions.WrongQueryFormatException;
 
 public class QueryParser {

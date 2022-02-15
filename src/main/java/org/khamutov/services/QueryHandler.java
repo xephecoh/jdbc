@@ -1,12 +1,11 @@
 package org.khamutov.services;
 
-import org.khamutov.enam.QueryType;
+import org.khamutov.entities.QueryType;
+import org.khamutov.entities.Table;
 import org.khamutov.exceptions.WrongQueryFormatException;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class QueryHandler {
@@ -37,7 +36,7 @@ public class QueryHandler {
                     QueryType queryType = parser.parseQuery(query);
                     if (queryType.equals(QueryType.SELECT)) {
                         ResultSet resultSet = statement.executeQuery(query);
-                        List<TableEntity> queryContent = mapper.parseQueryResult(resultSet);
+                        Table queryContent = mapper.parseQueryResult(resultSet);
                         resultSet.close();
                         reportGenerator.generateReport(queryContent);
                         consolePrinter.printToConsole(queryContent);
@@ -49,8 +48,10 @@ public class QueryHandler {
                 }
                 System.out.println("Query processed,enter new query");
             }
-        } catch (SQLException | IOException e) {
+        } catch ( IOException | WrongQueryFormatException e) {
             System.out.println(e.getMessage());
+        }catch (SQLException y){
+            throw new RuntimeException("Unable to connect to db" + initializeService.getUrl());
         }
     }
 }
